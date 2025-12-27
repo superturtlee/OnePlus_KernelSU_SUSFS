@@ -14,5 +14,6 @@
   "bbg": false,
   "bbr": false,
   "ttl": false,
-  "ip_set": false
+  "ip_set": false,
+  "kpm": false
 }
