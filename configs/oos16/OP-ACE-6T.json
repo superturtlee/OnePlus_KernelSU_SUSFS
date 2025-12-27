@@ -13,6 +13,6 @@
   "susfs": true,
   "bbg": false,
   "bbr": false,
-  "ttl": true,
-  "ip_set": true
+  "ttl": false,
+  "ip_set": false
 }
