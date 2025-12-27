@@ -736,7 +736,7 @@ runs:
 
     - name: Add SUKISU
       shell: bash
-      if: ${{ inputs.ksu_type == 'KSU' }}
+      if: ${{ inputs.ksu_type == 'SUKISU' }}
       run: |
         set -euo pipefail
         echo "::group::Add SUKISU"
