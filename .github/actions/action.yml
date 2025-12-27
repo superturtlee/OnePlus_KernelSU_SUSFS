@@ -984,7 +984,7 @@ runs:
         if [ "${{ inputs.ksu_type }}" = "SUKISU" ]; then
         cat >> common/arch/arm64/configs/gki_defconfig <<EOF
         CONFIG_KSU=y
-        CONFIG_KPM=y
+        CONFIG_KPM=n
         CONFIG_KSU_KPROBES_HOOK=n
         CONFIG_KSU_SUSFS=y
         CONFIG_KSU_SUSFS_HAS_MAGIC_MOUNT=y
@@ -1503,7 +1503,7 @@ runs:
 
         cd "$GITHUB_WORKSPACE/AnyKernel3"
         
-        if [ "${{ inputs.ksu_type }}" = "SUKISU" ]; then
+        if [ "${{ inputs.ksu_type }}" = "SUKISU_DISABLED" ]; then
           echo "Applying KPM Patch"
           wget https://github.com/SukiSU-Ultra/SukiSU_patch/raw/refs/heads/main/kpm/patch_linux
           chmod +x patch_linux
