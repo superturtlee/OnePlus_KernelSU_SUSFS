@@ -790,7 +790,9 @@ runs:
         else
           echo "NEED_HOOKS=false" >> $GITHUB_ENV
         fi
-        if [ "${{ inputs.ksu_type }}" = "KSUN" ]; then
+        if [ "${{ inputs.ksu_type }}" = "SUKISU" ]; then
+        cd ./KernelSU
+        else
         case "$susfs_version" in
           "v1.5.8")
             if [ "${{ inputs.ksu_type }}" = "KSUN" ]; then
@@ -855,8 +857,6 @@ runs:
             exit 1
             ;;
         esac
-        else
-        cd ./KernelSU
         fi
         
         cd ../common
@@ -981,6 +981,7 @@ runs:
         set -euo pipefail
         echo "::group::Add KSU / KSUN and SUSFS Configuration Settings"
         cd "$CONFIG/kernel_platform"
+        if [ "${{ inputs.ksu_type }}" = "SUKISU" ]; then
         cat >> common/arch/arm64/configs/gki_defconfig <<EOF
         CONFIG_KSU=y
         CONFIG_KPM=y
@@ -1005,6 +1006,30 @@ runs:
         CONFIG_TMPFS_XATTR=y
         CONFIG_TMPFS_POSIX_ACL=y
         EOF
+        else
+        cat >> common/arch/arm64/configs/gki_defconfig <<EOF
+        CONFIG_KSU=y
+        CONFIG_KSU_KPROBES_HOOK=n
+        CONFIG_KSU_SUSFS=y
+        CONFIG_KSU_SUSFS_HAS_MAGIC_MOUNT=y
+        CONFIG_KSU_SUSFS_SUS_PATH=y
+        CONFIG_KSU_SUSFS_SUS_MOUNT=y
+        CONFIG_KSU_SUSFS_AUTO_ADD_SUS_KSU_DEFAULT_MOUNT=y
+        CONFIG_KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT=y
+        CONFIG_KSU_SUSFS_SUS_KSTAT=y
+        CONFIG_KSU_SUSFS_SUS_OVERLAYFS=n
+        CONFIG_KSU_SUSFS_TRY_UMOUNT=y
+        CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT=y
+        CONFIG_KSU_SUSFS_SPOOF_UNAME=y
+        CONFIG_KSU_SUSFS_ENABLE_LOG=y
+        CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS=y
+        CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG=y
+        CONFIG_KSU_SUSFS_OPEN_REDIRECT=y
+        CONFIG_KSU_SUSFS_SUS_MAP=y
+        CONFIG_KSU_SUSFS_SUS_SU=n
+        CONFIG_TMPFS_XATTR=y
+        CONFIG_TMPFS_POSIX_ACL=y
+        fi
         echo "::endgroup::"
 
     - name: Add BBR
@@ -1475,7 +1500,18 @@ runs:
         fi
         
         cp "$IMAGE_PATH" "$GITHUB_WORKSPACE/AnyKernel3/Image"
+
         cd "$GITHUB_WORKSPACE/AnyKernel3"
+        
+        if [ "${{ inputs.ksu_type }}" = "SUKISU" ]; then
+          echo "Applying KPM Patch"
+          wget https://github.com/SukiSU-Ultra/SukiSU_patch/raw/refs/heads/main/kpm/patch_linux
+          chmod +x patch_linux
+          ./patch_linux
+          rm -f ./Image
+          mv ./oImage ./Image
+          rm -f ./patchlinux
+        fi
         
         if [ "${{ env.OP_SUSFS }}" = true ]; then
           ZIP_NAME="AK3_${OP_MODEL}_${OP_OS_VERSION}_${KERNEL_FULL_VER}_${{ inputs.ksu_type }}_${KSUVER:-unknown}_SuSFS_${SUSVER:-unknown}.zip"
