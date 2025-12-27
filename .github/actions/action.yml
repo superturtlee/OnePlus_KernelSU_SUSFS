@@ -856,7 +856,7 @@ runs:
             ;;
         esac
         else
-        :
+        cd ./KernelSU
         fi
         
         cd ../common
