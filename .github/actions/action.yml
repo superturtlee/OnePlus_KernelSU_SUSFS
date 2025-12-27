@@ -1029,6 +1029,7 @@ runs:
         CONFIG_KSU_SUSFS_SUS_SU=n
         CONFIG_TMPFS_XATTR=y
         CONFIG_TMPFS_POSIX_ACL=y
+        EOF
         fi
         echo "::endgroup::"
 
