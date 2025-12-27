@@ -984,7 +984,7 @@ runs:
         if [ "${{ inputs.ksu_type }}" = "SUKISU" ]; then
         cat >> common/arch/arm64/configs/gki_defconfig <<EOF
         CONFIG_KSU=y
-        CONFIG_KPM=n
+        CONFIG_KPM=y
         CONFIG_KALLSYMS=y
         CONFIG_KSU_KPROBES_HOOK=n
         CONFIG_KSU_SUSFS=y
